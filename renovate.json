@@ -1,6 +1,6 @@
 {
   "extends": [
-    "github>openstack-k8s-operators/renovate-config"
+    "github>dprince/renovate-config"
   ],
   "constraints": {
     "go": "1.19"
