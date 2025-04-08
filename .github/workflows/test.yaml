@@ -1,0 +1,14 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '*'
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  call-build-workflow:
+    uses: dprince/openstack-operator/.github/workflows/promote-pull-request.yaml@promotion_action
+    with:
+      operator_name: keystone
