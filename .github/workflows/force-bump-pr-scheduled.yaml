@@ -1,0 +1,12 @@
+name: Force Bump Automatically
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 minutes (UTC)
+    #- cron: '0 2 * * 6'  # 2AM UTC Saturday
+
+jobs:
+  call-build-workflow:
+    uses: dprince/openstack-k8s-operators-ci/.github/workflows/force-bump-pull-request.yaml@force-bump-branches
+    with:
+      operator_name: keystone

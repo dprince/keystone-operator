@@ -1,12 +1,7 @@
-name: Foo
+name: Force Bump PR
 
 on:
   workflow_dispatch:
-    branches:
-      - main
-      - 18.0-fr2
-  schedule:
-    - cron: '0 2 * * 6'  # 2AM UTC Saturday
 
 jobs:
   call-build-workflow:
