@@ -1,0 +1,16 @@
+name: Foo
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+      - 18.0-fr2
+  schedule:
+    - cron: '0 2 * * 6'  # 2AM UTC Saturday
+
+jobs:
+  call-build-workflow:
+    uses: dprince/openstack-k8s-operators-ci/.github/workflows/force-bump-pull-request.yaml@force-bump-pull-request
+    with:
+      operator_name: keystone
+      branch_name: ${{ github.ref_name }}
