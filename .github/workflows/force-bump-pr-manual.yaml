@@ -1,0 +1,14 @@
+name: Manually Trigger a Force Bump PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-build-workflow:
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'dprince'
+    uses: dprince/openstack-k8s-operators-ci/.github/workflows/force-bump-pull-request.yaml@forcePullRequestPAT
+    with:
+      operator_name: keystone
+      branch_name: ${{ github.ref_name }}
+    secrets:
+      FORCE_BUMP_PULL_REQUEST_PAT: ${{ secrets.FORCE_BUMP_PULL_REQUEST_PAT }}
