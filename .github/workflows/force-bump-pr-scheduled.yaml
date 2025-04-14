@@ -1,0 +1,12 @@
+name: Scheduled Force Bump PR
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # every 10 minutes (UTC)
+    #- cron: '0 2 * * 6'  # 2AM UTC Saturday
+
+jobs:
+  call-build-workflow:
+    uses: openstack-k8s-operators/openstack-k8s-operators-ci/.github/workflows/force-bump-branches.yaml@main
+    with:
+      operator_name: keystone
