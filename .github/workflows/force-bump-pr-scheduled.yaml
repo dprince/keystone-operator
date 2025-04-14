@@ -1,0 +1,14 @@
+name: Scheduled Force Bump PR
+
+on:
+  schedule:
+    #- cron: '0 2 * * 6'  # 2AM UTC Saturday
+    - cron: '*/5 * * * *'  # Runs every 5 minutes
+
+
+jobs:
+  call-build-workflow:
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'dprince'
+    uses: openstack-k8s-operators/openstack-k8s-operators-ci/.github/workflows/force-bump-branches.yaml@main
+    with:
+      operator_name: keystone
