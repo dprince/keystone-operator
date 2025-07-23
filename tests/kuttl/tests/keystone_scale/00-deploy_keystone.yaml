@@ -1,1 +1,21 @@
-../../common/keystoneapi_deploy.yaml
+apiVersion: keystone.openstack.org/v1beta2
+kind: KeystoneAPI
+metadata:
+  name: keystone
+spec:
+  adminProject: admin
+  adminUser: admin
+  customServiceConfig: |
+    [DEFAULT]
+    debug = true
+  databaseName: openstack
+  databaseAccount: keystone
+  memcachedInstance: memcached
+  rabbitMqClusterName: rabbitmq
+  preserveJobs: false
+  region: regionOne
+  secret: osp-secret
+  resources:
+    requests:
+      memory: "500Mi"
+      cpu: "1.0"

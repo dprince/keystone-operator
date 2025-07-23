@@ -1,1 +1,12 @@
-../../../../config/samples/keystone_v1beta1_keystoneservice.yaml
+apiVersion: keystone.openstack.org/v1beta2
+kind: KeystoneService
+metadata:
+  name: placement
+spec:
+  serviceUser: placement
+  enabled: true
+  serviceDescription: "Placement service"
+  serviceName: placement
+  serviceType: placement
+  secret: osp-secret
+  passwordSelector: PlacementPassword

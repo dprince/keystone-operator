@@ -1,5 +1,5 @@
 /*
-Copyright 2022.
+Copyright 2025.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1beta1
+package v1beta2
 
 import (
 	"fmt"
@@ -24,6 +24,7 @@ import (
 	"github.com/openstack-k8s-operators/lib-common/modules/common/endpoint"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/service"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/tls"
+	"github.com/openstack-k8s-operators/lib-common/modules/common/util"
 	"github.com/openstack-k8s-operators/lib-common/modules/storage"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -62,11 +63,12 @@ type KeystoneAPISpec struct {
 
 // KeystoneAPISpec defines the desired state of KeystoneAPI
 type KeystoneAPISpecCore struct {
+
 	// +kubebuilder:validation:Required
 	// MariaDB instance name
 	// Right now required by the maridb-operator to get the credentials from the instance to create the DB
 	// Might not be required in future
-	DatabaseInstance string `json:"databaseInstance"`
+	DatabaseName string `json:"databaseName"`
 
 	// +kubebuilder:validation:Optional
 	// +kubebuilder:default=keystone
@@ -211,6 +213,12 @@ type KeystoneAPISpecCore struct {
 	// This is only needed when multiple realms are federated.
 	// Config files mount path is set to /var/lib/httpd/metadata/
 	FederatedRealmConfig string `json:"federatedRealmConfig"`
+
+	// +kubebuilder:validation:Optional
+	// Mount path for federation config files
+	// This is only needed when multiple realms are federated.
+	// If not specified, "/etc/httpd/conf" is used
+	FederationMountPath string `json:"federationMountPath"`
 }
 
 // APIOverrideSpec to override the generated manifest of several child resources.
@@ -281,6 +289,7 @@ type KeystoneAPIStatus struct {
 }
 
 //+kubebuilder:object:root=true
+//+kubebuilder:storageversion
 //+kubebuilder:subresource:status
 //+kubebuilder:printcolumn:name="NetworkAttachments",type="string",JSONPath=".spec.networkAttachments",description="NetworkAttachments"
 //+kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.conditions[0].status",description="Status"
@@ -336,8 +345,18 @@ func (instance KeystoneAPI) RbacResourceName() string {
 	return "keystone-" + instance.Name
 }
 
+// GetRegion - return the region name from status (added for compatibility with v1beta1)
+func (instance *KeystoneAPI) GetRegion() string {
+	return instance.Status.Region
+}
+
+// KeystoneAPIDefaults -
+type KeystoneAPIDefaults struct {
+	ContainerImageURL string
+	APITimeout        int
+}
+
 // SetupDefaults - initializes any CRD field defaults based on environment variables (the defaulting mechanism itself is implemented via webhooks)
-/*
 func SetupDefaults() {
 	// Acquire environmental defaults and initialize Keystone defaults with them
 	keystoneDefaults := KeystoneAPIDefaults{
@@ -346,7 +365,14 @@ func SetupDefaults() {
 	}
 
 	SetupKeystoneAPIDefaults(keystoneDefaults)
-}*/
+}
+
+// SetupKeystoneAPIDefaults - setup defaults function that can be called from v1beta1 or externally
+func SetupKeystoneAPIDefaults(defaults KeystoneAPIDefaults) {
+	keystoneAPIDefaults = defaults
+
+        keystoneapilog.Info("KeystoneAPI defaults initialized", "defaults", defaults)
+}
 
 // KeystoneExtraVolMounts exposes additional parameters processed by keystone-operator
 // and defines the common VolMounts structure provided by the main storage module
@@ -381,7 +407,5 @@ func (instance *KeystoneAPISpecCore) ValidateTopology(
 	return allErrs
 }
 
-// GetRegion -
-func (instance *KeystoneAPI) GetRegion() string {
-	return instance.Status.Region
-}
+// Hub marks this version as a conversion hub.
+func (*KeystoneAPI) Hub() {}

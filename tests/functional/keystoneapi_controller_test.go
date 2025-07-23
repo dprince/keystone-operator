@@ -129,7 +129,7 @@ var _ = Describe("Keystone controller", func() {
 
 		It("should have the Spec fields defaulted", func() {
 			Keystone := GetKeystoneAPI(keystoneAPIName)
-			Expect(Keystone.Spec.DatabaseInstance).Should(Equal("openstack"))
+			Expect(Keystone.Spec.DatabaseName).Should(Equal("openstack"))
 			Expect(Keystone.Spec.DatabaseAccount).Should(Equal(keystoneAccountName.Name))
 			Expect(*(Keystone.Spec.Replicas)).Should(Equal(int32(1)))
 		})
@@ -238,7 +238,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -288,7 +288,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -354,7 +354,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -453,7 +453,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -518,7 +518,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -584,7 +584,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -659,7 +659,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -709,7 +709,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -835,7 +835,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -909,7 +909,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -958,7 +958,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1195,7 +1195,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1253,7 +1253,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1306,7 +1306,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1359,7 +1359,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1422,7 +1422,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1486,7 +1486,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1588,7 +1588,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1711,7 +1711,7 @@ var _ = Describe("Keystone controller", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1850,7 +1850,7 @@ OIDCRedirectURI "{{ .KeystoneEndpointPublic }}/v3/auth/OS-FEDERATION/websso/open
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1908,7 +1908,7 @@ OIDCRedirectURI "{{ .KeystoneEndpointPublic }}/v3/auth/OS-FEDERATION/websso/open
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -1977,7 +1977,7 @@ OIDCRedirectURI "{{ .KeystoneEndpointPublic }}/v3/auth/OS-FEDERATION/websso/open
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -2063,7 +2063,7 @@ OIDCRedirectURI "{{ .KeystoneEndpointPublic }}/v3/auth/OS-FEDERATION/websso/open
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},

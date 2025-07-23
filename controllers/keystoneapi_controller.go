@@ -27,7 +27,7 @@ import (
 	memcachedv1 "github.com/openstack-k8s-operators/infra-operator/apis/memcached/v1beta1"
 	rabbitmqv1 "github.com/openstack-k8s-operators/infra-operator/apis/rabbitmq/v1beta1"
 	topologyv1 "github.com/openstack-k8s-operators/infra-operator/apis/topology/v1beta1"
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	keystone "github.com/openstack-k8s-operators/keystone-operator/pkg/keystone"
 	"github.com/openstack-k8s-operators/lib-common/modules/common"
 	condition "github.com/openstack-k8s-operators/lib-common/modules/common/condition"
@@ -129,7 +129,7 @@ type KeystoneAPIReconciler struct {
 func (r *KeystoneAPIReconciler) Reconcile(ctx context.Context, req ctrl.Request) (result ctrl.Result, _err error) {
 	Log := r.GetLogger(ctx)
 	// Fetch the KeystoneAPI instance
-	instance := &keystonev1.KeystoneAPI{}
+	instance := &keystonev2.KeystoneAPI{}
 	err := r.Client.Get(ctx, req.NamespacedName, instance)
 	if err != nil {
 		if k8s_errors.IsNotFound(err) {
@@ -270,9 +270,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	Log := r.GetLogger(ctx)
 
 	// index passwordSecretField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, passwordSecretField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, passwordSecretField, func(rawObj client.Object) []string {
 		// Extract the secret name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.Secret == "" {
 			return nil
 		}
@@ -282,9 +282,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	// index caBundleSecretNameField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, caBundleSecretNameField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, caBundleSecretNameField, func(rawObj client.Object) []string {
 		// Extract the secret name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.TLS.CaBundleSecretName == "" {
 			return nil
 		}
@@ -294,9 +294,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	// index tlsAPIInternalField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, tlsAPIInternalField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, tlsAPIInternalField, func(rawObj client.Object) []string {
 		// Extract the secret name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.TLS.API.Internal.SecretName == nil {
 			return nil
 		}
@@ -306,9 +306,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	// index tlsAPIPublicField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, tlsAPIPublicField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, tlsAPIPublicField, func(rawObj client.Object) []string {
 		// Extract the secret name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.TLS.API.Public.SecretName == nil {
 			return nil
 		}
@@ -318,9 +318,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	// index httpdOverrideSecretField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, httpdCustomServiceConfigSecretField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, httpdCustomServiceConfigSecretField, func(rawObj client.Object) []string {
 		// Extract the secret name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.HttpdCustomization.CustomConfigSecret == nil {
 			return nil
 		}
@@ -330,9 +330,9 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	// index topologyField
-	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev1.KeystoneAPI{}, topologyField, func(rawObj client.Object) []string {
+	if err := mgr.GetFieldIndexer().IndexField(context.Background(), &keystonev2.KeystoneAPI{}, topologyField, func(rawObj client.Object) []string {
 		// Extract the topology name from the spec, if one is provided
-		cr := rawObj.(*keystonev1.KeystoneAPI)
+		cr := rawObj.(*keystonev2.KeystoneAPI)
 		if cr.Spec.TopologyRef == nil {
 			return nil
 		}
@@ -345,7 +345,7 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 		result := []reconcile.Request{}
 
 		// get all KeystoneAPI CRs
-		keystoneAPIs := &keystonev1.KeystoneAPIList{}
+		keystoneAPIs := &keystonev2.KeystoneAPIList{}
 		listOpts := []client.ListOption{
 			client.InNamespace(o.GetNamespace()),
 		}
@@ -371,7 +371,7 @@ func (r *KeystoneAPIReconciler) SetupWithManager(ctx context.Context, mgr ctrl.M
 	}
 
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&keystonev1.KeystoneAPI{}).
+		For(&keystonev2.KeystoneAPI{}).
 		Owns(&mariadbv1.MariaDBDatabase{}).
 		Owns(&mariadbv1.MariaDBAccount{}).
 		Owns(&batchv1.Job{}).
@@ -402,7 +402,7 @@ func (r *KeystoneAPIReconciler) findObjectsForSrc(ctx context.Context, src clien
 	Log := r.GetLogger(context.Background())
 
 	for _, field := range allWatchFields {
-		crList := &keystonev1.KeystoneAPIList{}
+		crList := &keystonev2.KeystoneAPIList{}
 		listOps := &client.ListOptions{
 			FieldSelector: fields.OneTermEqualSelector(field, src.GetName()),
 			Namespace:     src.GetNamespace(),
@@ -430,7 +430,7 @@ func (r *KeystoneAPIReconciler) findObjectsForSrc(ctx context.Context, src clien
 	return requests
 }
 
-func (r *KeystoneAPIReconciler) reconcileDelete(ctx context.Context, instance *keystonev1.KeystoneAPI, helper *helper.Helper) (ctrl.Result, error) {
+func (r *KeystoneAPIReconciler) reconcileDelete(ctx context.Context, instance *keystonev2.KeystoneAPI, helper *helper.Helper) (ctrl.Result, error) {
 	Log := r.GetLogger(ctx)
 	Log.Info("Reconciling Service delete")
 
@@ -496,7 +496,7 @@ func (r *KeystoneAPIReconciler) reconcileDelete(ctx context.Context, instance *k
 
 func (r *KeystoneAPIReconciler) reconcileInit(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	helper *helper.Helper,
 	serviceLabels map[string]string,
 	serviceAnnotations map[string]string,
@@ -529,11 +529,11 @@ func (r *KeystoneAPIReconciler) reconcileInit(
 	//
 	// run keystone db sync
 	//
-	dbSyncHash := instance.Status.Hash[keystonev1.DbSyncHash]
+	dbSyncHash := instance.Status.Hash[keystonev2.DbSyncHash]
 	jobDef := keystone.DbSyncJob(instance, serviceLabels, serviceAnnotations)
 	dbSyncjob := job.NewJob(
 		jobDef,
-		keystonev1.DbSyncHash,
+		keystonev2.DbSyncHash,
 		instance.Spec.PreserveJobs,
 		5*time.Second,
 		dbSyncHash,
@@ -560,8 +560,8 @@ func (r *KeystoneAPIReconciler) reconcileInit(
 		return ctrl.Result{}, err
 	}
 	if dbSyncjob.HasChanged() {
-		instance.Status.Hash[keystonev1.DbSyncHash] = dbSyncjob.GetHash()
-		Log.Info(fmt.Sprintf("Job %s hash added - %s", jobDef.Name, instance.Status.Hash[keystonev1.DbSyncHash]))
+		instance.Status.Hash[keystonev2.DbSyncHash] = dbSyncjob.GetHash()
+		Log.Info(fmt.Sprintf("Job %s hash added - %s", jobDef.Name, instance.Status.Hash[keystonev2.DbSyncHash]))
 	}
 	instance.Status.Conditions.MarkTrue(condition.DBSyncReadyCondition, condition.DBSyncReadyMessage)
 
@@ -691,10 +691,10 @@ func (r *KeystoneAPIReconciler) reconcileInit(
 	jobDef = keystone.BootstrapJob(instance, serviceLabels, serviceAnnotations, instance.Status.APIEndpoints)
 	bootstrapjob := job.NewJob(
 		jobDef,
-		keystonev1.BootstrapHash,
+		keystonev2.BootstrapHash,
 		instance.Spec.PreserveJobs,
 		5*time.Second,
-		instance.Status.Hash[keystonev1.BootstrapHash],
+		instance.Status.Hash[keystonev2.BootstrapHash],
 	)
 	ctrlResult, err = bootstrapjob.DoJob(
 		ctx,
@@ -718,8 +718,8 @@ func (r *KeystoneAPIReconciler) reconcileInit(
 		return ctrl.Result{}, err
 	}
 	if bootstrapjob.HasChanged() {
-		instance.Status.Hash[keystonev1.BootstrapHash] = bootstrapjob.GetHash()
-		Log.Info(fmt.Sprintf("Job %s hash added - %s", jobDef.Name, instance.Status.Hash[keystonev1.BootstrapHash]))
+		instance.Status.Hash[keystonev2.BootstrapHash] = bootstrapjob.GetHash()
+		Log.Info(fmt.Sprintf("Job %s hash added - %s", jobDef.Name, instance.Status.Hash[keystonev2.BootstrapHash]))
 	}
 	instance.Status.Conditions.MarkTrue(condition.BootstrapReadyCondition, condition.BootstrapReadyMessage)
 
@@ -753,7 +753,7 @@ func (r *KeystoneAPIReconciler) reconcileUpgrade(ctx context.Context) (ctrl.Resu
 
 func (r *KeystoneAPIReconciler) reconcileNormal(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	helper *helper.Helper,
 ) (ctrl.Result, error) {
 	Log := r.GetLogger(ctx)
@@ -1242,7 +1242,7 @@ func (r *KeystoneAPIReconciler) reconcileNormal(
 
 func (r *KeystoneAPIReconciler) transportURLCreateOrUpdate(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	serviceLabels map[string]string,
 ) (*rabbitmqv1.TransportURL, controllerutil.OperationResult, error) {
 	transportURL := &rabbitmqv1.TransportURL{
@@ -1265,7 +1265,7 @@ func (r *KeystoneAPIReconciler) transportURLCreateOrUpdate(
 // TODO add DefaultConfigOverwrite
 func (r *KeystoneAPIReconciler) generateServiceConfigMaps(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	h *helper.Helper,
 	envVars *map[string]env.Setter,
 	mc *memcachedv1.Memcached,
@@ -1402,7 +1402,7 @@ func (r *KeystoneAPIReconciler) generateServiceConfigMaps(
 func (r *KeystoneAPIReconciler) reconcileCloudConfig(
 	ctx context.Context,
 	h *helper.Helper,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 ) error {
 	// clouds.yaml
 	var openStackConfig keystone.OpenStackConfig
@@ -1490,7 +1490,7 @@ func (r *KeystoneAPIReconciler) reconcileCloudConfig(
 // ensureFernetKeys - creates secret with fernet keys, rotates the keys
 func (r *KeystoneAPIReconciler) ensureFernetKeys(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	helper *helper.Helper,
 	envVars *map[string]env.Setter,
 ) error {
@@ -1641,7 +1641,7 @@ func (r *KeystoneAPIReconciler) ensureFernetKeys(
 // returns the array of sorted filenames
 func (r *KeystoneAPIReconciler) ensureFederationRealmConfig(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	helper *helper.Helper,
 	envVars *map[string]env.Setter,
 ) ([]string, error) {
@@ -1729,7 +1729,7 @@ func (r *KeystoneAPIReconciler) ensureFederationRealmConfig(
 // returns the hash, whether the hash changed (as a bool) and any error
 func (r *KeystoneAPIReconciler) createHashOfInputHashes(
 	ctx context.Context,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	envVars map[string]env.Setter,
 ) (string, bool, error) {
 	Log := r.GetLogger(ctx)
@@ -1750,7 +1750,7 @@ func (r *KeystoneAPIReconciler) createHashOfInputHashes(
 func (r *KeystoneAPIReconciler) ensureDB(
 	ctx context.Context,
 	h *helper.Helper,
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 ) (*mariadbv1.Database, ctrl.Result, error) {
 
 	// ensure MariaDBAccount exists.  This account record may be created by
@@ -1782,11 +1782,11 @@ func (r *KeystoneAPIReconciler) ensureDB(
 	// create service DB instance
 	//
 	db := mariadbv1.NewDatabaseForAccount(
-		instance.Spec.DatabaseInstance, // mariadb/galera service to target
-		keystone.DatabaseName,          // name used in CREATE DATABASE in mariadb
-		keystone.DatabaseCRName,        // CR name for MariaDBDatabase
-		instance.Spec.DatabaseAccount,  // CR name for MariaDBAccount
-		instance.Namespace,             // namespace
+		instance.Spec.DatabaseName,    // mariadb/galera service to target
+		keystone.DatabaseName,         // name used in CREATE DATABASE in mariadb
+		keystone.DatabaseCRName,       // CR name for MariaDBDatabase
+		instance.Spec.DatabaseAccount, // CR name for MariaDBAccount
+		instance.Namespace,            // namespace
 	)
 
 	// create or patch the DB

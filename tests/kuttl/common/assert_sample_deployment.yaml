@@ -6,7 +6,7 @@
 # - Keystone-internal Service
 # - Keystone-public Service
 
-apiVersion: keystone.openstack.org/v1beta1
+apiVersion: keystone.openstack.org/v1beta2
 kind: KeystoneAPI
 metadata:
   finalizers:
@@ -18,8 +18,10 @@ spec:
   customServiceConfig: |
     [DEFAULT]
     debug = true
-  databaseInstance: openstack
+  databaseName: openstack
   databaseAccount: keystone
+  memcachedInstance: memcached
+  rabbitMqClusterName: rabbitmq
   memcachedInstance: memcached
   passwordSelectors:
     admin: AdminPassword
@@ -137,7 +139,7 @@ spec:
 # the actual addresses of the apiEndpoints are platform specific, so we can't rely on
 # kuttl asserts to check them. This short script gathers the addresses and checks that
 # the three endpoints are defined and their addresses follow the default pattern
-apiVersion: kuttl.dev/v1beta1
+apiVersion: kuttl.dev/v1beta2
 kind: TestAssert
 commands:
   - script: |

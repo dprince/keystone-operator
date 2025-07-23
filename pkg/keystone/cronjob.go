@@ -17,7 +17,7 @@ package keystone
 
 import (
 	memcachedv1 "github.com/openstack-k8s-operators/infra-operator/apis/memcached/v1beta1"
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/env"
 
 	batchv1 "k8s.io/api/batch/v1"
@@ -32,7 +32,7 @@ const (
 
 // CronJob func
 func CronJob(
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	labels map[string]string,
 	annotations map[string]string,
 	memcached *memcachedv1.Memcached,
@@ -47,7 +47,7 @@ func CronJob(
 	completions := int32(1)
 
 	// create Volume and VolumeMounts
-	keystoneCronJobExtraMounts := []keystonev1.KeystoneExtraMounts{}
+	keystoneCronJobExtraMounts := []keystonev2.KeystoneExtraMounts{}
 	volumes := getVolumes(instance, keystoneCronJobExtraMounts, KeystoneCronJobPropagation)
 	volumeMounts := getCronJobVolumeMounts()
 

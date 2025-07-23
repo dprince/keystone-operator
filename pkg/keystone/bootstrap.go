@@ -16,7 +16,7 @@ limitations under the License.
 package keystone
 
 import (
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 
 	"github.com/openstack-k8s-operators/lib-common/modules/common/env"
 
@@ -32,7 +32,7 @@ const (
 
 // BootstrapJob func
 func BootstrapJob(
-	instance *keystonev1.KeystoneAPI,
+	instance *keystonev2.KeystoneAPI,
 	labels map[string]string,
 	annotations map[string]string,
 	endpoints map[string]string,
@@ -60,7 +60,7 @@ func BootstrapJob(
 	}
 
 	// create Volume and VolumeMounts
-	bootstrapExtraMounts := []keystonev1.KeystoneExtraMounts{}
+	bootstrapExtraMounts := []keystonev2.KeystoneExtraMounts{}
 	volumes := getVolumes(instance, bootstrapExtraMounts, BootstrapPropagation)
 	volumeMounts := getVolumeMounts(bootstrapExtraMounts, BootstrapPropagation)
 

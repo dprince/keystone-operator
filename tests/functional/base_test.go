@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	keystone_base "github.com/openstack-k8s-operators/keystone-operator/pkg/keystone"
 	condition "github.com/openstack-k8s-operators/lib-common/modules/common/condition"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,11 +34,14 @@ import (
 
 func GetKeystoneAPISpec(fernetMaxKeys int32) map[string]interface{} {
 	return map[string]interface{}{
-		"databaseInstance":    "openstack",
+		"databaseName":        "openstack",
 		"replicas":            1,
 		"secret":              SecretName,
 		"databaseAccount":     AccountName,
 		"fernetMaxActiveKeys": fernetMaxKeys,
+		"memcachedInstance":   "memcached",
+		"rabbitMqClusterName": "rabbitmq",
+		//"containerImage":      "quay.io/podified-antelope-centos9/openstack-keystone:current-podified",
 	}
 }
 
@@ -48,10 +51,13 @@ func GetDefaultKeystoneAPISpec() map[string]interface{} {
 
 func GetTLSKeystoneAPISpec() map[string]interface{} {
 	return map[string]interface{}{
-		"databaseInstance": "openstack",
-		"replicas":         1,
-		"secret":           SecretName,
-		"databaseAccount":  AccountName,
+		"databaseName":        "openstack",
+		"replicas":            1,
+		"secret":              SecretName,
+		"databaseAccount":     AccountName,
+		"memcachedInstance":   "memcached",
+		"rabbitMqClusterName": "rabbitmq",
+		//"containerImage":      "quay.io/podified-antelope-centos9/openstack-keystone:current-podified",
 		"tls": map[string]interface{}{
 			"api": map[string]interface{}{
 				"internal": map[string]interface{}{
@@ -69,7 +75,7 @@ func GetTLSKeystoneAPISpec() map[string]interface{} {
 func CreateKeystoneAPI(name types.NamespacedName, spec map[string]interface{}) client.Object {
 
 	raw := map[string]interface{}{
-		"apiVersion": "keystone.openstack.org/v1beta1",
+		"apiVersion": "keystone.openstack.org/v1beta2",
 		"kind":       "KeystoneAPI",
 		"metadata": map[string]interface{}{
 			"name":      name.Name,
@@ -80,8 +86,8 @@ func CreateKeystoneAPI(name types.NamespacedName, spec map[string]interface{}) c
 	return th.CreateUnstructured(raw)
 }
 
-func GetKeystoneAPI(name types.NamespacedName) *keystonev1.KeystoneAPI {
-	instance := &keystonev1.KeystoneAPI{}
+func GetKeystoneAPI(name types.NamespacedName) *keystonev2.KeystoneAPI {
+	instance := &keystonev2.KeystoneAPI{}
 	Eventually(func(g Gomega) {
 		g.Expect(k8sClient.Get(ctx, name, instance)).Should(Succeed())
 	}, timeout, interval).Should(Succeed())

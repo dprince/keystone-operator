@@ -33,6 +33,7 @@ import (
 	topologyv1 "github.com/openstack-k8s-operators/infra-operator/apis/topology/v1beta1"
 	keystone_test "github.com/openstack-k8s-operators/keystone-operator/api/test/helpers"
 	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	"github.com/openstack-k8s-operators/keystone-operator/controllers"
 	keystone_base "github.com/openstack-k8s-operators/keystone-operator/pkg/keystone"
 	common_test "github.com/openstack-k8s-operators/lib-common/modules/common/test/helpers"
@@ -124,6 +125,9 @@ var _ = BeforeSuite(func() {
 
 	err = keystonev1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
+
+	err = keystonev2.AddToScheme(scheme.Scheme)
+	Expect(err).NotTo(HaveOccurred())
 	err = mariadbv1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 	err = memcachedv1.AddToScheme(scheme.Scheme)
@@ -167,10 +171,10 @@ var _ = BeforeSuite(func() {
 	kclient, err := kubernetes.NewForConfig(cfg)
 	Expect(err).ToNot(HaveOccurred(), "failed to create kclient")
 
-	err = (&keystonev1.KeystoneAPI{}).SetupWebhookWithManager(k8sManager)
+	err = (&keystonev2.KeystoneAPI{}).SetupWebhookWithManager(k8sManager)
 	Expect(err).NotTo(HaveOccurred())
 
-	keystonev1.SetupDefaults()
+	keystonev2.SetupDefaults()
 
 	err = (&controllers.KeystoneAPIReconciler{
 		Client:  k8sManager.GetClient(),

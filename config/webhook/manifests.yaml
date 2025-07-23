@@ -10,14 +10,14 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /mutate-keystone-openstack-org-v1beta1-keystoneapi
+      path: /mutate-keystone-openstack-org-v1beta2-keystoneapi
   failurePolicy: Fail
   name: mkeystoneapi.kb.io
   rules:
   - apiGroups:
     - keystone.openstack.org
     apiVersions:
-    - v1beta1
+    - v1beta2
     operations:
     - CREATE
     - UPDATE
@@ -36,14 +36,14 @@ webhooks:
     service:
       name: webhook-service
       namespace: system
-      path: /validate-keystone-openstack-org-v1beta1-keystoneapi
+      path: /validate-keystone-openstack-org-v1beta2-keystoneapi
   failurePolicy: Fail
   name: vkeystoneapi.kb.io
   rules:
   - apiGroups:
     - keystone.openstack.org
     apiVersions:
-    - v1beta1
+    - v1beta2
     operations:
     - CREATE
     - UPDATE

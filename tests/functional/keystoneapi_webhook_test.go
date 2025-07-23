@@ -32,7 +32,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	memcachedv1 "github.com/openstack-k8s-operators/infra-operator/apis/memcached/v1beta1"
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	condition "github.com/openstack-k8s-operators/lib-common/modules/common/condition"
 	"github.com/openstack-k8s-operators/lib-common/modules/common/service"
 )
@@ -87,7 +87,7 @@ var _ = Describe("KeystoneAPI Webhook", func() {
 		It("should have the defaults initialized by webhook", func() {
 			KeystoneAPI := GetKeystoneAPI(keystoneAPIName)
 			Expect(KeystoneAPI.Spec.ContainerImage).Should(Equal(
-				keystonev1.KeystoneAPIContainerImage,
+				keystonev2.KeystoneAPIContainerImage,
 			))
 		})
 	})
@@ -117,7 +117,7 @@ var _ = Describe("KeystoneAPI Webhook", func() {
 		}
 
 		raw := map[string]interface{}{
-			"apiVersion": "keystone.openstack.org/v1beta1",
+			"apiVersion": "keystone.openstack.org/v1beta2",
 			"kind":       "KeystoneAPI",
 			"metadata": map[string]interface{}{
 				"name":      keystoneAPIName.Name,
@@ -151,7 +151,7 @@ var _ = Describe("KeystoneAPI Webhook", func() {
 				mariadb.DeleteDBService,
 				mariadb.CreateDBService(
 					namespace,
-					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseInstance,
+					GetKeystoneAPI(keystoneAPIName).Spec.DatabaseName,
 					corev1.ServiceSpec{
 						Ports: []corev1.ServicePort{{Port: 3306}},
 					},
@@ -203,7 +203,7 @@ var _ = Describe("KeystoneAPI Webhook", func() {
 			"namespace": "bar",
 		}
 		raw := map[string]interface{}{
-			"apiVersion": "keystone.openstack.org/v1beta1",
+			"apiVersion": "keystone.openstack.org/v1beta2",
 			"kind":       "KeystoneAPI",
 			"metadata": map[string]interface{}{
 				"name":      "keystoneapi",

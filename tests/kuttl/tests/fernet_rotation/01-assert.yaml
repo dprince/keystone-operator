@@ -1,5 +1,5 @@
 # create a test token, save it in /tmp/
-apiVersion: kuttl.dev/v1beta1
+apiVersion: kuttl.dev/v1beta2
 kind: TestAssert
 commands:
   - script: ../../common/scripts/create_test_token.sh

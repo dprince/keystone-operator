@@ -1,1 +1,6 @@
-../../common/cleanup-keystone.yaml
+apiVersion: kuttl.dev/v1beta2
+kind: TestStep
+delete:
+- apiVersion: keystone.openstack.org/v1beta2
+  kind: KeystoneAPI
+  name: keystone

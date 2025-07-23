@@ -3,7 +3,7 @@
 #
 # - 1 KeystoneAPI CR
 #
-apiVersion: keystone.openstack.org/v1beta1
+apiVersion: keystone.openstack.org/v1beta2
 kind: KeystoneAPI
 metadata:
   finalizers:

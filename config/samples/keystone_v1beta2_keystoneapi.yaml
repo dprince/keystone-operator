@@ -1,0 +1,12 @@
+apiVersion: keystone.openstack.org/v1beta2
+kind: KeystoneAPI
+metadata:
+  labels:
+    app.kubernetes.io/name: keystoneapi
+    app.kubernetes.io/instance: keystoneapi-sample
+    app.kubernetes.io/part-of: keystone-operator
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: keystone-operator
+  name: keystoneapi-sample
+spec:
+  # TODO(user): Add fields here

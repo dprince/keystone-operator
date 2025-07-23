@@ -1,1 +1,44 @@
-../../common/errors_cleanup_keystone.yaml
+#
+# Check for:
+#
+# No KeystoneAPI CR
+# No Deployment for KeystoneAPI CR
+# No Pods in keystone Deployment
+# No Keystone Services
+#
+apiVersion: keystone.openstack.org/v1beta2
+kind: KeystoneAPI
+metadata:
+  finalizers:
+  - openstack.org/keystoneapi
+  name: keystone
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keystone
+---
+# the openshift annotations can't be checked through the deployment above
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/scc: anyuid
+  labels:
+    service: keystone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    endpoint: internal
+    service: keystone
+  name: keystone-internal
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    endpoint: public
+    service: keystone
+  name: keystone-public

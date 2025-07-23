@@ -4,7 +4,7 @@
 # - 1 KeystoneAPI CR
 # - 1 KeystoneService CR
 #
-apiVersion: keystone.openstack.org/v1beta1
+apiVersion: keystone.openstack.org/v1beta2
 kind: KeystoneAPI
 metadata:
   finalizers:
@@ -12,7 +12,7 @@ metadata:
   - openstack.org/keystoneservice-placement
   name: keystone
 ---
-apiVersion: keystone.openstack.org/v1beta1
+apiVersion: keystone.openstack.org/v1beta2
 kind: KeystoneService
 metadata:
   finalizers:

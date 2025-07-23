@@ -43,11 +43,12 @@ import (
 	memcachedv1 "github.com/openstack-k8s-operators/infra-operator/apis/memcached/v1beta1"
 	rabbitmqv1 "github.com/openstack-k8s-operators/infra-operator/apis/rabbitmq/v1beta1"
 	topologyv1 "github.com/openstack-k8s-operators/infra-operator/apis/topology/v1beta1"
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	"github.com/openstack-k8s-operators/lib-common/modules/common/operator"
 	mariadbv1 "github.com/openstack-k8s-operators/mariadb-operator/api/v1beta1"
 
+	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	"github.com/openstack-k8s-operators/keystone-operator/controllers"
-	"github.com/openstack-k8s-operators/lib-common/modules/common/operator"
 	//+kubebuilder:scaffold:imports
 )
 
@@ -58,7 +59,9 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+
 	utilruntime.Must(keystonev1.AddToScheme(scheme))
+	utilruntime.Must(keystonev2.AddToScheme(scheme))
 	utilruntime.Must(mariadbv1.AddToScheme(scheme))
 	utilruntime.Must(rabbitmqv1.AddToScheme(scheme))
 	utilruntime.Must(memcachedv1.AddToScheme(scheme))
@@ -162,16 +165,21 @@ func main() {
 	}
 
 	// Acquire environmental defaults and initialize operator defaults with them
-	keystonev1.SetupDefaults()
+	keystonev2.SetupDefaults()
 
 	checker := healthz.Ping
 	// Setup webhooks if requested
 	if strings.ToLower(os.Getenv("ENABLE_WEBHOOKS")) != "false" {
 
-		if err = (&keystonev1.KeystoneAPI{}).SetupWebhookWithManager(mgr); err != nil {
+		/*if err = (&keystonev1.KeystoneAPI{}).SetupWebhookWithManager(mgr); err != nil {
+			setupLog.Error(err, "unable to create webhook", "webhook", "KeystoneAPI")
+			os.Exit(1)
+		}*/
+		if err = (&keystonev2.KeystoneAPI{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "KeystoneAPI")
 			os.Exit(1)
 		}
+
 		checker = mgr.GetWebhookServer().StartedChecker()
 	}
 

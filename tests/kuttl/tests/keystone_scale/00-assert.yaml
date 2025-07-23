@@ -1,1 +1,178 @@
-../../common/assert_sample_deployment.yaml
+#
+# Check for:
+#
+# - 1 KeystoneAPI CR
+# - Deployment with 1 Pod for KeystoneAPI CR
+# - Keystone-internal Service
+# - Keystone-public Service
+
+apiVersion: keystone.openstack.org/v1beta2
+kind: KeystoneAPI
+metadata:
+  finalizers:
+  - openstack.org/keystoneapi
+  name: keystone
+spec:
+  adminProject: admin
+  adminUser: admin
+  customServiceConfig: |
+    [DEFAULT]
+    debug = true
+  databaseName: openstack
+  databaseAccount: keystone
+  memcachedInstance: memcached
+  passwordSelectors:
+    admin: AdminPassword
+  preserveJobs: false
+  region: regionOne
+  replicas: 1
+  resources:
+    requests:
+      cpu: "1"
+      memory: 500Mi
+  secret: osp-secret
+status:
+  databaseHostname: openstack.keystone-kuttl-tests.svc
+  readyCount: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keystone
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: keystone
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: service
+                  operator: In
+                  values:
+                  - keystone
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - args:
+        - -c
+        - /usr/local/bin/kolla_start
+        command:
+        - /bin/bash
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v3
+            port: 5000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: keystone-api
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v3
+            port: 5000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 30
+        resources:
+          requests:
+            cpu: "1"
+            memory: 500Mi
+      restartPolicy: Always
+      serviceAccount: keystone-keystone
+      serviceAccountName: keystone-keystone
+status:
+  availableReplicas: 1
+  replicas: 1
+---
+# the openshift annotations can't be checked through the deployment above
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    openshift.io/scc: anyuid
+  labels:
+    service: keystone
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    endpoint: internal
+    service: keystone
+  name: keystone-internal
+spec:
+  ports:
+    - name: keystone-internal
+  selector:
+    service: keystone
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    endpoint: public
+    service: keystone
+  name: keystone-public
+spec:
+  ports:
+    - name: keystone-public
+  selector:
+    service: keystone
+  type: ClusterIP
+---
+# the actual addresses of the apiEndpoints are platform specific, so we can't rely on
+# kuttl asserts to check them. This short script gathers the addresses and checks that
+# the three endpoints are defined and their addresses follow the default pattern
+apiVersion: kuttl.dev/v1beta2
+kind: TestAssert
+commands:
+  - script: |
+      # the actual addresses of the apiEndpoints are platform specific, so we can't rely on
+      # kuttl asserts to check them. This short script gathers the addresses and checks that
+      # the three endpoints are defined and their addresses follow the default pattern
+      template='{{.status.apiEndpoints.internal}}{{":"}}{{.status.apiEndpoints.public}}{{"\n"}}'
+      regex="http:\/\/keystone-internal.$NAMESPACE.*:http:\/\/keystone-public.$NAMESPACE.*"
+      apiEndpoints=$(oc get -n $NAMESPACE KeystoneAPI  keystone -o go-template="$template")
+      matches=$(echo "$apiEndpoints" | sed -e "s?$regex??")
+      if [ -z "$matches" ]; then
+        exit 0
+      else
+        echo "Endpoints URLS: $apiEndpoints do not match regex"
+        exit 1
+      fi
+
+      # when using image digests the containerImage URLs are SHA's so we verify them with a script
+      tupleTemplate='{{ range (index .spec.template.spec.containers 1).env }}{{ .name }}{{ "#" }}{{ .value}}{{"\n"}}{{ end }}'
+      imageTuples=$(oc get -n openstack-operators deployment keystone-operator-controller-manager -o go-template="$tupleTemplate")
+      # format of imageTuple is: RELATED_IMAGE_KEYSTONE_<service>#<image URL with SHA> separated by newlines
+      for ITEM in $(echo $imageTuples); do
+        # it is an image
+        if echo $ITEM | grep 'RELATED_IMAGE' &> /dev/null; then
+          NAME=$(echo $ITEM | sed -e 's|^RELATED_IMAGE_KEYSTONE_\([^_]*\)_.*|\1|')
+          IMG_FROM_ENV=$(echo $ITEM | sed -e 's|^.*#\(.*\)|\1|')
+          template='{{.spec.containerImage}}'
+          case $NAME in
+            API)
+              SERVICE_IMAGE=$(oc get -n $NAMESPACE keystoneapi keystone -o go-template="$template")
+              ;;
+          esac
+          if [ "$SERVICE_IMAGE" != "$IMG_FROM_ENV" ]; then
+            echo "$NAME image does not equal $VALUE"
+            exit 1
+          fi
+        fi
+      done

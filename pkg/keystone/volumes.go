@@ -17,15 +17,16 @@ package keystone
 
 import (
 	"fmt"
-	keystonev1 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta1"
+
+	keystonev2 "github.com/openstack-k8s-operators/keystone-operator/api/v1beta2"
 	"github.com/openstack-k8s-operators/lib-common/modules/storage"
 	corev1 "k8s.io/api/core/v1"
 )
 
 // getVolumes - service volumes
 func getVolumes(
-	instance *keystonev1.KeystoneAPI,
-	extraVol []keystonev1.KeystoneExtraMounts,
+	instance *keystonev2.KeystoneAPI,
+	extraVol []keystonev2.KeystoneExtraMounts,
 	svc []storage.PropagationType,
 ) []corev1.Volume {
 	name := instance.Name
@@ -109,7 +110,7 @@ func getVolumes(
 
 // getVolumeMounts - general VolumeMounts
 func getVolumeMounts(
-	extraVol []keystonev1.KeystoneExtraMounts,
+	extraVol []keystonev2.KeystoneExtraMounts,
 	svc []storage.PropagationType,
 ) []corev1.VolumeMount {
 	vm := []corev1.VolumeMount{

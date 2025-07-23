@@ -5,7 +5,7 @@
 # - Keystone Deployment with 0 Pods
 #
 
-apiVersion: keystone.openstack.org/v1beta1
+apiVersion: keystone.openstack.org/v1beta2
 kind: KeystoneAPI
 metadata:
   finalizers:
@@ -17,7 +17,7 @@ spec:
   customServiceConfig: |
     [DEFAULT]
     debug = true
-  databaseInstance: openstack
+  databaseName: openstack
   databaseAccount: keystone
   passwordSelectors:
     admin: AdminPassword
