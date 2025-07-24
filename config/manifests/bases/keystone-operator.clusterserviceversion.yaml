@@ -27,6 +27,15 @@ spec:
       - description: TLS - Parameters related to the TLS
         displayName: TLS
         path: tls
+      version: v1beta2
+    - description: KeystoneAPI is the Schema for the keystoneapis API
+      displayName: Keystone API
+      kind: KeystoneAPI
+      name: keystoneapis.keystone.openstack.org
+      specDescriptors:
+      - description: TLS - Parameters related to the TLS
+        displayName: TLS
+        path: tls
       version: v1beta1
     - description: KeystoneEndpoint is the Schema for the keystoneendpoints API
       displayName: Keystone Endpoint
@@ -45,9 +54,9 @@ spec:
       deployments: null
     strategy: ""
   installModes:
-  - supported: true
+  - supported: false
     type: OwnNamespace
-  - supported: true
+  - supported: false
     type: SingleNamespace
   - supported: false
     type: MultiNamespace
