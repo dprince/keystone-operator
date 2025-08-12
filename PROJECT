@@ -51,6 +51,7 @@ resources:
   path: github.com/openstack-k8s-operators/keystone-operator/api/v1beta2
   version: v1beta2
   webhooks:
+    conversion: true
     defaulting: true
     validation: true
     webhookVersion: v1

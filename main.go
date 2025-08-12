@@ -171,10 +171,6 @@ func main() {
 	// Setup webhooks if requested
 	if strings.ToLower(os.Getenv("ENABLE_WEBHOOKS")) != "false" {
 
-		/*if err = (&keystonev1.KeystoneAPI{}).SetupWebhookWithManager(mgr); err != nil {
-			setupLog.Error(err, "unable to create webhook", "webhook", "KeystoneAPI")
-			os.Exit(1)
-		}*/
 		if err = (&keystonev2.KeystoneAPI{}).SetupWebhookWithManager(mgr); err != nil {
 			setupLog.Error(err, "unable to create webhook", "webhook", "KeystoneAPI")
 			os.Exit(1)
