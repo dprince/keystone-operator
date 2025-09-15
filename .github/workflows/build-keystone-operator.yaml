@@ -12,7 +12,7 @@ env:
 
 jobs:
   call-build-workflow:
-    uses: openstack-k8s-operators/openstack-k8s-operators-ci/.github/workflows/reusable-build-operator.yaml@main
+    uses: dprince/openstack-k8s-operators-ci/.github/workflows/reusable-build-operator.yaml@file_based_catalogs
     with:
       operator_name: keystone
       go_version: 1.21.x
